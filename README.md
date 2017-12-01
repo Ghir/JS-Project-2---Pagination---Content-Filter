@@ -1,4 +1,4 @@
-# JS-Project-2---Pagination-&-Content-Filter
+# JS-Project-2---Pagination-Content-Filter
 
 TREEHOUSE TECHDEGREE FULL STACK JAVASCRIPT - PROJECT 2 - PAGINATION & CONTENT FILTER
 
