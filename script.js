@@ -1,4 +1,3 @@
-
 const students = document.getElementsByClassName('student-item');
 const page = document.querySelector('.page');
 const pagination = document.createElement('div');
@@ -62,7 +61,6 @@ function showFirstTen (num) {
   }
 }
 
-// function to create all pagination
 function createPagination (numOfStudents) {
   showFirstTen(numOfStudents);
   // remove previous pagination
@@ -71,15 +69,13 @@ function createPagination (numOfStudents) {
   }
   // define number of pages needed
   const numOfPages = Math.ceil(numOfStudents.length / 10);
-  // append pagination links needed
+  // append pagination links
   for (let i=0; i<numOfPages; i++) {
     ul.appendChild(li.cloneNode(true))
   }
   pagination.appendChild(ul);
-  // give numbers to links
   for (let i=0; i<numOfPages; i++) {
     document.getElementsByTagName('a')[i].innerText = (i+1).toString();
-    // define links functionality
     document.getElementsByTagName('a')[i].addEventListener('click', function () {
       hideAll()
       // define which students to show
@@ -95,13 +91,10 @@ function createPagination (numOfStudents) {
   setActive(numOfPages);
 }
 
-// define search feature
 function search (numOfStudents) {
-  // clear everything
   matchedStudents = [];
   hideAll();
   message.remove();
-  // add matched students to empty array
   for (let i=0; i<students.length; i++) {
     if (students[i].innerText.includes(input.value.toLowerCase())) {
       matchedStudents.push(students[i]);
@@ -115,34 +108,25 @@ function search (numOfStudents) {
       }
     }
   }
-  // display message if no matches are found
   if (matchedStudents.length === 0) {
     studentList.appendChild(message);
   }
-  // create new pagination
   createPagination(matchedStudents);
 }
 
-// define reset feature
 function reset () {
-  // clear input and message
   input.value = '';
   message.remove();
-  // append to page all students
   for (let i=0; i<students.length; i++) {
     students[i].style.display = ''
   }
-  // create new pagination
   createPagination(students);
 }
 
-// create initial pagination
 createPagination(students);
-// add all event listeners
 resetButton.addEventListener('click', reset);
 searchButton.addEventListener('click', search);
 window.addEventListener('keydown', function(e) {
-  // if enter key is pressed and input is active then search students
   if (e.keyCode === 13 && input == document.activeElement) {
     search();
   }
