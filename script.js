@@ -1,22 +1,20 @@
-const students = document.getElementsByClassName('student-item');
-const page = document.querySelector('.page');
 const pagination = document.createElement('div');
-const ul = document.createElement('ul');
-const li = document.createElement('li');
-const anchor = document.createElement('a');
-const searchBox = document.createElement('div');
-const input = document.createElement('input');
-const searchButton = document.createElement('button');
-const resetButton = document.createElement('button');
-const studentList = document.querySelector('.student-list');
-const message = document.createElement('p')
-const pageHeader = document.querySelector('.page-header');
-let matchedStudents = [];
-
 pagination.classList.add('pagination');
+const page = document.querySelector('.page');
+page.appendChild(pagination);
+
+const studentItems = document.querySelectorAll('.student-item'),
+ul = document.createElement('ul'),
+li = document.createElement('li'),
+anchor = document.createElement('a'),
+searchBox = document.createElement('div'),
+input = document.createElement('input'),
+searchButton = document.createElement('button'),
+resetButton = document.createElement('button'),
+message = document.createElement('p');
+
 anchor.setAttribute('href', '#');
 li.appendChild(anchor);
-page.appendChild(pagination);
 searchBox.classList.add('student-search');
 input.setAttribute('placeholder', 'Search for students...');
 searchBox.appendChild(input);
@@ -26,107 +24,68 @@ resetButton.id = 'reset';
 resetButton.innerText = 'Reset';
 searchBox.appendChild(searchButton);
 searchBox.appendChild(resetButton);
-pageHeader.appendChild(searchBox);
+document.querySelector('.page-header').appendChild(searchBox);
 message.innerText = 'Not found!';
 
-// hide all students
-function hideAll () {
-  for (let i=0; i<students.length; i++) {
-    students[i].style.display = 'none'
-}}
+const setDisplay = (students, val) => Array.from(students).forEach(student => student.style.display = val);
 
-// highlight pagination links
-function setActive (num) {
-  // first link
-  if (document.querySelector('a')) {
-    document.querySelector('a').classList.add('active');
-    // other links if clicked
-    for (let i=0; i<num; i++) {
-      document.getElementsByTagName('a')[i].addEventListener('click', function () {
-        for (let i=0; i<num; i++) {
-          document.getElementsByTagName('a')[i].classList.remove('active');
-        }
-        this.classList.add('active');
-      })
-    }
-  }
-}
-
-// show only first ten students
-function showFirstTen (num) {
-  for (let i=0; i<num.length; i++) {
-    if (i > 9) {
-      num[i].style.display = 'none';
-    }
-  }
-}
-
-function createPagination (numOfStudents) {
-  showFirstTen(numOfStudents);
-  // remove previous pagination
-  for (let i=ul.children.length-1; i>=0; i--) {
-    ul.children[i].remove();
-  }
-  // define number of pages needed
-  const numOfPages = Math.ceil(numOfStudents.length / 10);
-  // append pagination links
-  for (let i=0; i<numOfPages; i++) {
+const createPagination = students => {
+  students.forEach((student, i) => student.style.display = i > 9 ? 'none' : '')
+  Array.from(ul.children).forEach(el => el.remove()); // remove previous pagination
+  const pagesNeeded = Math.ceil(students.length / 10);
+  for (let i = 0; i < pagesNeeded; i++) {
     ul.appendChild(li.cloneNode(true))
   }
   pagination.appendChild(ul);
-  for (let i=0; i<numOfPages; i++) {
-    document.getElementsByTagName('a')[i].innerText = (i+1).toString();
-    document.getElementsByTagName('a')[i].addEventListener('click', function () {
-      hideAll()
-      // define which students to show
-      const bottom = i*10;
-      const top = i*10+10;
-      for (let i=0; i<numOfStudents.length; i++) {
-        if (i >= bottom && i < top) {
-          numOfStudents[i].style.display = '';
-        }
-      }
+  for (let i = 0; i < pagesNeeded; i++) {
+    document.querySelectorAll('a')[i].innerText = (i+1).toString();
+    document.querySelectorAll('a')[i].addEventListener('click', () => {
+      setDisplay(studentItems, 'none');
+      const bottom = i * 10;
+      const top = i * 10 + 10;
+      Array.from(students).forEach((student, i) => student.style.display = i >= bottom && i < top ? '' : 'none');
     })
   }
-  setActive(numOfPages);
+  // highlight page selectors
+  if (document.querySelector('a')) {
+    document.querySelector('a').classList.add('active');
+    document.querySelectorAll('a').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('a').forEach(el => el.classList.remove('active'));
+        el.classList.add('active');
+      });
+    })
+  };
 }
 
-function search (numOfStudents) {
-  matchedStudents = [];
-  hideAll();
+const search = () => {
+  setDisplay(studentItems, 'none');
+  let matchedStudents = [];
   message.remove();
-  for (let i=0; i<students.length; i++) {
-    if (students[i].innerText.includes(input.value.toLowerCase())) {
-      matchedStudents.push(students[i]);
+  Array.from(studentItems).forEach(student => {
+    if (student.innerText.includes(input.value.toLowerCase())) {
+      matchedStudents.push(student);
     }
-  }
-  // show matched students
-  for (let i=0; i<students.length; i++) {
-    for (let e=0; e<matchedStudents.length; e++) {
-      if (students[i] === matchedStudents[e]) {
-        students[i].style.display = '';
-      }
-    }
-  }
+  });
+  setDisplay(matchedStudents, '');
   if (matchedStudents.length === 0) {
-    studentList.appendChild(message);
+    document.querySelector('.student-list').appendChild(message);
   }
   createPagination(matchedStudents);
 }
 
-function reset () {
+const reset = () => {
   input.value = '';
   message.remove();
-  for (let i=0; i<students.length; i++) {
-    students[i].style.display = ''
-  }
-  createPagination(students);
+  setDisplay(studentItems, '');
+  createPagination(studentItems);
 }
 
-createPagination(students);
+createPagination(studentItems);
+
 resetButton.addEventListener('click', reset);
 searchButton.addEventListener('click', search);
-window.addEventListener('keydown', function(e) {
+window.addEventListener('keydown', e => {
   if (e.keyCode === 13 && input == document.activeElement) {
     search();
   }
