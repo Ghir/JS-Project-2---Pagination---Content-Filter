@@ -1,5 +1,5 @@
-### Pagination and content filter
+### Paginate and search
 
-An exercise to enhance a list of students that has too much information.
+An exercise to add pagination and searching in Vanilla JavaScript, given the HTML with a long list of items.
 
-![Screenshot](./pagination.png)
+![Screenshot](https://user-images.githubusercontent.com/33903713/79080702-6cb8ed80-7d17-11ea-9ac7-3202627a97a4.png)
