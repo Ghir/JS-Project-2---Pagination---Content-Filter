@@ -1,4 +1,4 @@
-### Paginate and search
+## Paginate And Search
 
 An exercise to add pagination and searching in Vanilla JavaScript, given the HTML with a long list of items.
 
